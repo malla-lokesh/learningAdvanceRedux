@@ -1,26 +1,35 @@
+import React from 'react';
 import classes from './CartItem.module.css';
+import { useDispatch } from 'react-redux';
+import { cartActions } from '../../store/CartReducer';
 
 const CartItem = (props) => {
-  const { title, quantity, total, price } = props.item;
+  const dispatch = useDispatch();
 
-  return (
-    <li className={classes.item}>
+  const cartItems = props.items.map((product) => {
+    return <React.Fragment key={product.id}>
       <header>
-        <h3>{title}</h3>
+        <h3>{product.title}</h3>
         <div className={classes.price}>
-          ${total.toFixed(2)}{' '}
-          <span className={classes.itemprice}>(${price.toFixed(2)}/item)</span>
+          ${product.total.toFixed(2)}{' '}
+          <span className={classes.itemPrice}>(${product.price.toFixed(2)})</span>
         </div>
       </header>
       <div className={classes.details}>
         <div className={classes.quantity}>
-          x <span>{quantity}</span>
+          x <span>{product.quantity}</span>
         </div>
         <div className={classes.actions}>
-          <button>-</button>
-          <button>+</button>
+          <button onClick={() => {dispatch(cartActions.removeItem(product))}}>-</button>
+          <button onClick={() => {dispatch(cartActions.addItemToCart(product))}}>+</button>
         </div>
       </div>
+    </React.Fragment>
+  })
+
+  return (
+    <li className={classes.item}>
+      {cartItems}
     </li>
   );
 };
